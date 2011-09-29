@@ -10,19 +10,18 @@
 // Whereas .serializeArray() serializes a form into an array, .serializeObject()
 // serializes a form into an (arguably more useful) object.
 
+// serializes only field-names specified in attr-array into Object
+
 (function($,undefined){
   '$:nomunge'; // Used by YUI compressor.
   
-  $.fn.serializeObject = function(){
+  $.fn.selectiveSerializeObject = function(attrs_mask){
     var obj = {};
-    
     $.each( this.serializeArray(), function(i,o){
-      var n = o.name,
-        v = o.value;
-        
-        obj[n] = obj[n] === undefined ? v
-          : $.isArray( obj[n] ) ? obj[n].concat( v )
-          : [ obj[n], v ];
+      var n = o.name, v = o.value;
+  		if (jQuery.inArray(n, attrs_mask) != -1) {
+      	obj[n] = obj[n] === undefined ? v : $.isArray( obj[n] ) ? obj[n].concat( v ) : [ obj[n], v ];
+			}
     });
     
     return obj;
